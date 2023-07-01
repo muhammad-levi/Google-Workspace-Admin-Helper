@@ -3,7 +3,7 @@ function emailReportsDMS_() {
 
   const options = {
     headers: {
-      "cookie": PropertiesService.getScriptProperties().getProperty('cookieEmailReportsDMS'),
+      "cookie": PropertiesService.getScriptProperties().getProperty('cookieDMS'),
     },
     payload: PropertiesService.getScriptProperties().getProperty('bodyEmailReportsDMS'),
     method: "POST"

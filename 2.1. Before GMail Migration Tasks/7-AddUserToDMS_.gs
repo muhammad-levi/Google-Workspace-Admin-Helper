@@ -5,7 +5,7 @@ function addUserToDMS_(userEmail, targetEmail) {
 
   const options = {
     headers: {
-      "cookie": PropertiesService.getScriptProperties().getProperty('cookieAddUserToDMS'),
+      "cookie": PropertiesService.getScriptProperties().getProperty('cookieDMS'),
     },
     payload: `f.req=%5B%5B%5B%22Ps0mJd%22%2C%22%5B%5C%2200leueii%5C%22%2C%5B%5B%5B%5C%22${encodeURIComponent(targetEmail)}%5C%22%2C%5C%22${encodeURIComponent(userEmail)}%5C%22%2C%5B%5B%5C%22${encodeURIComponent(userEmail)}%5C%22%2C%5C%22${encodeURIComponent(userPassword)}%5C%22%5D%5D%5D%5D%5D%5D%22%2Cnull%2C%22generic%22%5D%5D%5D&at=AFDX2tPfTVJPzDyHS-YFisU49FAW%3A1687955803541&`,
     method: "POST"

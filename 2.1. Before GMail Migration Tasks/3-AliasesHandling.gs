@@ -20,4 +20,5 @@ function handleAliases_(userEmail) {
     sheet.appendRow([userEmail, aliases, ALIASES_STATUS.IGNORED]);
     Logger.info(`No aliases for user ${userEmail}.`);
   }
+  sheet.getDataRange().removeDuplicates();
 }

@@ -4,7 +4,9 @@ function afterDeleteUserAliasesHandling_(userEmail, targetEmail) {
   insertAlias_(userEmail, targetEmail, emailType);
 
   const aliasesFromSheet = getAliasesFromSheet_(userEmail);
-  aliasesFromSheet.forEach(alias => insertAlias_(alias, targetEmail, emailType));
+  if (aliasesFromSheet) {
+    aliasesFromSheet.forEach(alias => insertAlias_(alias, targetEmail, emailType));
+  }
 }
 
 function insertAlias_(userEmail, targetEmail, emailType) {
@@ -32,33 +34,34 @@ function getAliasesFromSheet_(userEmail) {
 
   const sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
   const dataRange = sheet.getDataRange();
-  const deduplicatedRange = dataRange.removeDuplicates();
-
-  const dataValues = deduplicatedRange.getValues();
+  const dataValues = dataRange.getValues();
 
   const statusColumnIndex = 3; // Index of the Status column
 
-  const aliasesRow = dataValues.find((row) => {
+  const aliasesRow = dataValues.findLast((row) => {
     const email = row[0];
     const aliasesCSV = row[1];
     const status = row[2];
     return email === userEmail && aliasesCSV && status === ALIASES_STATUS.NEXT_UP;
   });
+  if (aliasesRow) {
+    const aliasesCSV = aliasesRow[1];
 
-  const aliasesCSV = aliasesRow[1];
+    const aliasesRowIndex = dataValues.findLastIndex((row) => {
+      const email = row[0];
+      const aliasesCSV = row[1];
+      const status = row[2];
+      return email === userEmail && aliasesCSV && status === ALIASES_STATUS.NEXT_UP;
+    });
 
-  const aliasesRowIndex = dataValues.findIndex((row) => {
-    const email = row[0];
-    const aliasesCSV = row[1];
-    const status = row[2];
-    return email === userEmail && aliasesCSV && status === ALIASES_STATUS.NEXT_UP;
-  });
+    const rowToUpdate = aliasesRowIndex + 1; // Adjust the row index to account for header row
+    const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
+    statusCell.setValue(ALIASES_STATUS.COMPLETED);
 
-  const rowToUpdate = aliasesRowIndex + 1; // Adjust the row index to account for header row
-  const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
-  statusCell.setValue(ALIASES_STATUS.COMPLETED);
-
-  return aliasesCSV.split(', ');
+    return aliasesCSV.split(', ');
+  } else {
+    return null;
+  }
 }
 
 function checkTargetEmailType_(targetEmail) {
