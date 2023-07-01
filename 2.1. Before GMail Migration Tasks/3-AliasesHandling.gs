@@ -14,10 +14,10 @@ function handleAliases_(userEmail) {
   const sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
   const aliases = getAllAliases_(userEmail); // Get all aliases for the user, will return `null` if the user has no alias
   if (aliases) {
-    sheet.appendRow([userEmail, aliases.join(', '), 'Next Up']);
+    sheet.appendRow([userEmail, aliases.join(', '), ALIASES_STATUS.NEXT_UP]);
     Logger.info(`Aliases for user ${userEmail}:\n${aliases}`);
   } else {
-    sheet.appendRow([userEmail, aliases, 'Ignored']);
+    sheet.appendRow([userEmail, aliases, ALIASES_STATUS.IGNORED]);
     Logger.info(`No aliases for user ${userEmail}.`);
   }
 }

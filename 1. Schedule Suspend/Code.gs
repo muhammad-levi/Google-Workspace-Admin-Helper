@@ -15,7 +15,7 @@ function processScheduledSuspensions() {
     const suspendDateTime = new Date(row[1]);
     const status = row[2];
 
-    if (status === "Scheduled" && suspendDateTime <= now) {
+    if (status === USER_STATUS.SCHEDULED && suspendDateTime <= now) {
       const email = row[0];
       const user = AdminDirectory.Users.get(email);
       const rowToUpdate = rowIndex + 1; // Adjust the row index to account for header row
@@ -39,7 +39,7 @@ function processScheduledSuspensions() {
       }
 
       const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
-      statusCell.setValue("Suspended");
+      statusCell.setValue(USER_STATUS.SUSPENDED);
     }
   });
 }

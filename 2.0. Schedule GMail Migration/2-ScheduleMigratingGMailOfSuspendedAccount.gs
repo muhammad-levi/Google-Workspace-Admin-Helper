@@ -21,24 +21,24 @@ function scheduleMigratingGMailOfSuspendedAccount() {
 
       const rowToUpdate = indexOfEntryGMailMigrationJustComplete + 1; // Adjust the row index to account for header row
       const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
-      statusCell.setValue("GMail Archived");
+      statusCell.setValue(USER_STATUS.GMAIL_ARCHIVED);
 
       resuspend_(lastUserEmail);
     }
 
     const firstEntryWithStatusIsSuspended = dataValues.find((row) => {
       const status = row[2];
-      return status === 'Suspended';
+      return status === USER_STATUS.SUSPENDED;
     });
 
     const indexOfFirstEntryWithStatusIsSuspended = dataValues.findIndex((row) => {
       const status = row[2];
-      return status === 'Suspended';
+      return status === USER_STATUS.SUSPENDED;
     });
 
     const rowToUpdate = indexOfFirstEntryWithStatusIsSuspended + 1; // Adjust the row index to account for header row
     const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
-    statusCell.setValue("Migrating GMail");
+    statusCell.setValue(USER_STATUS.MIGRATING_GMAIL);
 
     const userEmail = firstEntryWithStatusIsSuspended[0];
     doSomeThingsBeforeGMailMigration(userEmail, targetEmail);

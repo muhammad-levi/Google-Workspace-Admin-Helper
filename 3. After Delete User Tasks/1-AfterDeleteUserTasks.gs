@@ -26,5 +26,5 @@ function doSomeThingsAfterDeleteUser(userEmail, targetEmail, folderOwnerEmail) {
 
   const rowToUpdate = indexOfUserEmailInTheSheet + 1; // Adjust the row index to account for header row
   const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
-  statusCell.setValue("User Deleted");
+  statusCell.setValue(USER_STATUS.USER_DELETED);
 }

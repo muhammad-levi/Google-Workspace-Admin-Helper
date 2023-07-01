@@ -30,21 +30,12 @@ function getUserPasswordFromSheet_(userEmail) {
   const dataRange = sheet.getDataRange();
   const dataValues = dataRange.getValues();
 
-  const theNewPassword = dataValues
-    .filter(
-      (row) => {
-        const email = row[0];
-        if (email === userEmail) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    )
-    .flatMap((row) => {
-      const newPassword = row[3];
-      return newPassword;
-    })[0];
+  const row = dataValues.find((row) => {
+    const email = row[0];
+    return email === userEmail;
+  });
+
+  const theNewPassword = row[3];
 
   return theNewPassword;
 }

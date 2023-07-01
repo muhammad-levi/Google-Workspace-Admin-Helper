@@ -15,9 +15,9 @@ function insertAlias_(userEmail, targetEmail, emailType) {
   };
 
   let responseAlias = {};
-  if (emailType === 'User') {
+  if (emailType === EMAIL_TYPE.USER) {
     responseAlias = AdminDirectory.Users.Aliases.insert(requestBodyAlias, targetEmail);
-  } else if (emailType === 'Group') {
+  } else if (emailType === EMAIL_TYPE.GROUP) {
     responseAlias = AdminDirectory.Groups.Aliases.insert(requestBodyAlias, targetEmail);
   } else {
     Logger.error(`Unknown email type of ${targetEmail}`);
@@ -42,7 +42,7 @@ function getAliasesFromSheet_(userEmail) {
     const email = row[0];
     const aliasesCSV = row[1];
     const status = row[2];
-    return email === userEmail && aliasesCSV && status === 'Next Up';
+    return email === userEmail && aliasesCSV && status === ALIASES_STATUS.NEXT_UP;
   });
 
   const aliasesCSV = aliasesRow[1];
@@ -51,12 +51,12 @@ function getAliasesFromSheet_(userEmail) {
     const email = row[0];
     const aliasesCSV = row[1];
     const status = row[2];
-    return email === userEmail && aliasesCSV && status === 'Next Up';
+    return email === userEmail && aliasesCSV && status === ALIASES_STATUS.NEXT_UP;
   });
 
   const rowToUpdate = aliasesRowIndex + 1; // Adjust the row index to account for header row
   const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
-  statusCell.setValue("Completed");
+  statusCell.setValue(ALIASES_STATUS.COMPLETED);
 
   return aliasesCSV.split(', ');
 }
@@ -66,13 +66,13 @@ function checkTargetEmailType_(targetEmail) {
 
   try {
     const user = AdminDirectory.Users.get(targetEmail);
-    emailType = "User";
+    emailType = EMAIL_TYPE.USER;
   } catch (error) {
     try {
       const group = AdminDirectory.Groups.get(targetEmail);
-      emailType = "Group";
+      emailType = EMAIL_TYPE.GROUP;
     } catch (error) {
-      emailType = "Unknown";
+      emailType = EMAIL_TYPE.UNKNOWN;
     }
   }
 
