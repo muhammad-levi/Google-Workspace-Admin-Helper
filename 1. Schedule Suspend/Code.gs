@@ -15,14 +15,14 @@ function processScheduledSuspensions() {
     const suspendDateTime = new Date(row[1]);
     const status = row[2];
 
-    if (status !== "Completed" && suspendDateTime <= now) {
+    if (status === "Scheduled" && suspendDateTime <= now) {
       const email = row[0];
       const user = AdminDirectory.Users.get(email);
       const rowToUpdate = rowIndex + 1; // Adjust the row index to account for header row
 
       if (!user.suspended) {
         // Reset password
-        const newPassword = generateNewPassword();
+        const newPassword = generateNewPassword_();
 
         const newPasswordCell = sheet.getRange(rowToUpdate, newPasswordColumnIndex);
         newPasswordCell.setValue(newPassword);
@@ -32,7 +32,6 @@ function processScheduledSuspensions() {
         user.suspended = true;
 
         AdminDirectory.Users.update(user, email);
-
 
         Logger.info('User ' + email + ' has been suspended.');
       } else {
@@ -45,7 +44,7 @@ function processScheduledSuspensions() {
   });
 }
 
-function generateNewPassword() {
+function generateNewPassword_() {
   const length = 50; // Desired length of the generated password
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=';
 

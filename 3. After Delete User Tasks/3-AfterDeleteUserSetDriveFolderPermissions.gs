@@ -1,4 +1,4 @@
-function afterDeleteUserSetDrivePermissions(userEmail, targetEmail, folderOwnerEmail) {
+function afterDeleteUserSetDrivePermissions_(userEmail, targetEmail, folderOwnerEmail) {
   const service = getOAuthService_(folderOwnerEmail);
 
   if (service.hasAccess()) {
@@ -19,14 +19,14 @@ function afterDeleteUserSetDrivePermissions(userEmail, targetEmail, folderOwnerE
     const folderMetadata = JSON.parse(response.getContentText());
     const folderId = folderMetadata.files[0].id;
 
-    addEditorToDriveFolder(folderId, accessToken, targetEmail)
+    addEditorToDriveFolder_(folderId, accessToken, targetEmail)
   } else {
     Logger.error(service.getLastError());
   }
 }
 
-function addEditorToDriveFolder(folderId, accessToken, targetEmail) {
-  const emailType = checkTargetEmailType(targetEmail);
+function addEditorToDriveFolder_(folderId, accessToken, targetEmail) {
+  const emailType = checkTargetEmailType_(targetEmail);
 
   const permission = {
     role: 'writer',

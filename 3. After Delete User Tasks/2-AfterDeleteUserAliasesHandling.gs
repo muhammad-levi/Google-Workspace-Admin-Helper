@@ -1,13 +1,13 @@
-function afterDeleteUserAliasesHandling(userEmail, targetEmail) {
-  const emailType = checkTargetEmailType(targetEmail);
+function afterDeleteUserAliasesHandling_(userEmail, targetEmail) {
+  const emailType = checkTargetEmailType_(targetEmail);
 
-  insertAlias(userEmail, targetEmail, emailType);
+  insertAlias_(userEmail, targetEmail, emailType);
 
-  const aliasesFromSheet = getAliasesFromSheet(userEmail);
-  aliasesFromSheet.forEach(alias => insertAlias(alias, targetEmail, emailType));
+  const aliasesFromSheet = getAliasesFromSheet_(userEmail);
+  aliasesFromSheet.forEach(alias => insertAlias_(alias, targetEmail, emailType));
 }
 
-function insertAlias(userEmail, targetEmail, emailType) {
+function insertAlias_(userEmail, targetEmail, emailType) {
   // Set alias for target user/group address
   const requestBodyAlias = {
     alias: userEmail,
@@ -26,7 +26,7 @@ function insertAlias(userEmail, targetEmail, emailType) {
   Logger.info(`Alias ${responseAlias.alias} inserted for ${responseAlias.primaryEmail} successfully. ID: ${responseAlias.id}`);
 }
 
-function getAliasesFromSheet(userEmail) {
+function getAliasesFromSheet_(userEmail) {
   const spreadsheetId = PropertiesService.getScriptProperties().getProperty('spreadsheetIdAliases'); // Replace with your Google Sheet ID
   const sheetName = PropertiesService.getScriptProperties().getProperty('sheetNameAliases'); // Replace with the name of the sheet you're using
 
@@ -38,29 +38,30 @@ function getAliasesFromSheet(userEmail) {
 
   const statusColumnIndex = 3; // Index of the Status column
 
-  const aliases = dataValues
-    .filter((row, rowIndex) => {
-      const email = row[0];
-      const aliasesCSV = row[1];
-      const status = row[2];
-      if (email === userEmail && aliasesCSV && status === 'Next Up') {
-        const rowToUpdate = rowIndex + 1; // Adjust the row index to account for header row
-        const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
-        statusCell.setValue("Completed");
-        return true;
-      } else {
-        return false;
-      }
-    })
-    .flatMap((row) => {
-      const aliasesCSV = row[1];
-      return aliasesCSV.split(', ');
-    });
+  const aliasesRow = dataValues.find((row) => {
+    const email = row[0];
+    const aliasesCSV = row[1];
+    const status = row[2];
+    return email === userEmail && aliasesCSV && status === 'Next Up';
+  });
 
-  return aliases;
+  const aliasesCSV = aliasesRow[1];
+
+  const aliasesRowIndex = dataValues.findIndex((row) => {
+    const email = row[0];
+    const aliasesCSV = row[1];
+    const status = row[2];
+    return email === userEmail && aliasesCSV && status === 'Next Up';
+  });
+
+  const rowToUpdate = aliasesRowIndex + 1; // Adjust the row index to account for header row
+  const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
+  statusCell.setValue("Completed");
+
+  return aliasesCSV.split(', ');
 }
 
-function checkTargetEmailType(targetEmail) {
+function checkTargetEmailType_(targetEmail) {
   let emailType = "";
 
   try {

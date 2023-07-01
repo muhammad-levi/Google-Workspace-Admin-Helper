@@ -1,4 +1,4 @@
-function reactivateIfSuspended(userEmail) {
+function reactivateIfSuspended_(userEmail) {
   const user = AdminDirectory.Users.get(userEmail);
   if (user.suspended) {
     user.suspended = false;

@@ -1,4 +1,4 @@
-function enableIMAPForUser(userEmail, service) {
+function enableIMAPForUser_(userEmail, service) {
   const imapSettings = {
     enabled: true,
     autoExpunge: true,

@@ -1,9 +1,9 @@
-function handleLabelsShowOnIMAP(service) {
-  const labelsID = getAllLabelsID(service); // Get all labels for the user
-  enableShowOnIMAP(labelsID, service); // Enable "Show on IMAP" for each label
+function handleLabelsShowOnIMAP_(service) {
+  const labelsID = getAllLabelsID_(service); // Get all labels for the user
+  enableShowOnIMAP_(labelsID, service); // Enable "Show on IMAP" for each label
 }
 
-function getAllLabelsID(service) {
+function getAllLabelsID_(service) {
   if (service.hasAccess()) {
     const url = `https://www.googleapis.com/gmail/v1/users/${encodeURIComponent('me')}/labels`;
     const headers = {
@@ -39,7 +39,7 @@ function getAllLabelsID(service) {
   }
 }
 
-function enableShowOnIMAP(labelsID, service) {
+function enableShowOnIMAP_(labelsID, service) {
   if (service.hasAccess()) {
     labelsID.forEach(labelID => {
       const url = `https://www.googleapis.com/gmail/v1/users/me/labels/${encodeURIComponent(labelID)}`;
