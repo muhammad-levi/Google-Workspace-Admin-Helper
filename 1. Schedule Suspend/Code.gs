@@ -39,7 +39,7 @@ function processScheduledSuspensions() {
       }
 
       const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
-      statusCell.setValue("Completed");
+      statusCell.setValue("Suspended");
     }
   });
 }
