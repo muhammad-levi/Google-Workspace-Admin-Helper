@@ -17,3 +17,9 @@ const EMAIL_TYPE = Object.freeze({
   USER: 'User',
   UNKNOWN: 'Unknown',
 });
+
+const EXPORT_GOOGLE_PASSWORDS_STATUS = Object.freeze({
+  NOT_DONE: 'Not Done',
+  DONE: 'Done',
+  NO_PASSWORDS_STORED: 'No Passwords Stored',
+});
