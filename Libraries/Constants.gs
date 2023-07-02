@@ -8,7 +8,7 @@ const USER_STATUS = Object.freeze({
 
 const ALIASES_STATUS = Object.freeze({
   NEXT_UP: 'Next Up',
-  COMPLETED: 'COMPLETED',
+  COMPLETED: 'Completed',
   IGNORED: 'Ignored',
 });
 

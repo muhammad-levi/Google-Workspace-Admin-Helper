@@ -9,7 +9,8 @@ function checkDeletionEmails() {
   const safeToDeleteEmails = getSafeToDeleteEmails_(sheet);
 
   if (safeToDeleteEmails && safeToDeleteEmails.length > 0) {
-    const query = 'in:inbox from:(workspace-noreply@google.com) subject:(Your deletion of * from Google Workspace was successful) ' +
+    const senderEmail = 'workspace-noreply@google.com';
+    const query = 'in:inbox from:(' + senderEmail + ') subject:(Your deletion of * from Google Workspace was successful) ' +
       '{"' + safeToDeleteEmails.join('" "') + '"}';
     const threads = GmailApp.search(query);
 
@@ -22,6 +23,10 @@ function checkDeletionEmails() {
         // Extract user email from the body
         const emailRegex = /[\w\.-]+@[\w\.-]+\.\w+/g;
         const extractedEmails = body.match(emailRegex);
+        const indexOfSenderEmail = extractedEmails.findIndex(extractedEmail => extractedEmail === senderEmail);
+        if (indexOfSenderEmail !== -1) {
+          extractedEmails.splice(indexOfSenderEmail, 1);
+        }
 
         if (extractedEmails && extractedEmails.length > 1) {
           const userEmail = extractedEmails[1];
