@@ -34,7 +34,7 @@ function addEditorToDriveFolder_(folderId, accessToken, targetEmail) {
     emailAddress: targetEmail
   };
 
-  const apiUrl = `https://www.googleapis.com/drive/v3/files/${folderId}/permissions?sendNotificationEmail=false`;
+  const apiUrl = `https://www.googleapis.com/drive/v3/files/${folderId}/permissions`;
   const headers = {
     Authorization: 'Bearer ' + accessToken,
     'Content-Type': 'application/json'
