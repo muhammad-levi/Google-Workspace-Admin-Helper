@@ -43,9 +43,11 @@ function getSafeToDeleteEmails_(sheet) {
     .filter(row => {
       const status = row[2];
       const statusExportGooglePasswords = row[4];
+      const markForDeletion = row[5];
       return status === USER_STATUS.GMAIL_ARCHIVED &&
         (statusExportGooglePasswords === EXPORT_GOOGLE_PASSWORDS_STATUS.DONE ||
-          statusExportGooglePasswords === EXPORT_GOOGLE_PASSWORDS_STATUS.NO_PASSWORDS_STORED);
+          statusExportGooglePasswords === EXPORT_GOOGLE_PASSWORDS_STATUS.NO_PASSWORDS_STORED) &&
+        markForDeletion;
     })
     .flatMap(row => {
       const email = row[0];
