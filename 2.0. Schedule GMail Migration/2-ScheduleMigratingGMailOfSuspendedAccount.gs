@@ -54,7 +54,7 @@ function checkWhetherPreviousDMSEntryHasCompleted_(targetEmail) {
     const endIndex = responseBody.lastIndexOf("]]]]");
 
     if (startIndex === -1) {
-      // Entry not found for "archive@sid-indonesia.org", can `addUserToDMS` safely
+      // Entry not found, can `addUserToDMS` safely
       return { isDMSCompletedForTargetEmail: true, lastUserEmail: null };
     } else if (endIndex === -1) {
       // Unknown error, debug the API call get DMS progresses
