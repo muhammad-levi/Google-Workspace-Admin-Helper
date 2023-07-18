@@ -35,7 +35,7 @@ function getAllLabelsID_(service) {
       .map(label => label.id);
     return labelsID;
   } else {
-    Logger.error(service.getLastError());
+    Logger.log(service.getLastError());
   }
 }
 
@@ -59,10 +59,10 @@ function enableShowOnIMAP_(labelsID, service) {
         Logger.log(`"Show on IMAP" enabled for label ${labelID}`);
       } else {
         const errorMessage = `Failed to enable "Show on IMAP" for label ${labelID}. Status code: ${statusCode}, Response: ${response.getContentText()}`;
-        Logger.error(errorMessage);
+        Logger.log(errorMessage);
       }
     });
   } else {
-    Logger.error(service.getLastError());
+    Logger.log(service.getLastError());
   }
 }

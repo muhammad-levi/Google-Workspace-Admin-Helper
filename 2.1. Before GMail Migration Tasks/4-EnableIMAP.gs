@@ -24,9 +24,9 @@ function enableIMAPForUser_(userEmail, service) {
       Logger.info(`IMAP access enabled successfully for user ${userEmail}.`);
     } else {
       const errorMessage = `Failed to enable IMAP access. Status code: ${statusCode}, Response: ${response.getContentText()}`;
-      Logger.error(errorMessage);
+      Logger.log(errorMessage);
     }
   } else {
-    Logger.error(service.getLastError());
+    Logger.log(service.getLastError());
   }
 }

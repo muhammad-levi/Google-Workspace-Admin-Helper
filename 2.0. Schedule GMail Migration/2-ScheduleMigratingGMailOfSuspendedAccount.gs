@@ -31,17 +31,19 @@ function scheduleMigratingGMailOfSuspendedAccount() {
       return status === USER_STATUS.SUSPENDED;
     });
 
-    const indexOfFirstEntryWithStatusIsSuspended = dataValues.findIndex((row) => {
-      const status = row[2];
-      return status === USER_STATUS.SUSPENDED;
-    });
+    if (firstEntryWithStatusIsSuspended) {
+      const indexOfFirstEntryWithStatusIsSuspended = dataValues.findIndex((row) => {
+        const status = row[2];
+        return status === USER_STATUS.SUSPENDED;
+      });
 
-    const rowToUpdate = indexOfFirstEntryWithStatusIsSuspended + 1; // Adjust the row index to account for header row
-    const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
-    statusCell.setValue(USER_STATUS.MIGRATING_GMAIL);
+      const rowToUpdate = indexOfFirstEntryWithStatusIsSuspended + 1; // Adjust the row index to account for header row
+      const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
+      statusCell.setValue(USER_STATUS.MIGRATING_GMAIL);
 
-    const userEmail = firstEntryWithStatusIsSuspended[0];
-    doSomeThingsBeforeGMailMigration(userEmail, targetEmail);
+      const userEmail = firstEntryWithStatusIsSuspended[0];
+      doSomeThingsBeforeGMailMigration(userEmail, targetEmail);
+    }
   }
 }
 
@@ -53,12 +55,11 @@ function checkWhetherPreviousDMSEntryHasCompleted_(targetEmail) {
     const startIndex = responseBody.indexOf(targetEmail);
     const endIndex = responseBody.lastIndexOf("]]]]");
 
-    if (startIndex === -1) {
-      // Entry not found, can `addUserToDMS` safely
-      return { isDMSCompletedForTargetEmail: true, lastUserEmail: null };
-    } else if (endIndex === -1) {
-      // Unknown error, debug the API call get DMS progresses
-      return { isDMSCompletedForTargetEmail: false, lastUserEmail: null };
+    if (startIndex === -1 || endIndex === -1) {
+      // The cookie might be expired or another unknown error, debug the API call get DMS progresses
+      const errorMessage = `The cookie is possibly expired... Renew the cookie, get a new one in the DMS page. Response: ${responseBody}`;
+      Logger.log(errorMessage);
+      throw new Error(errorMessage);
     } else {
       const entryString = responseBody.substring(startIndex - 3, endIndex + 1).replaceAll('\\"', '"');
 
@@ -75,7 +76,7 @@ function checkWhetherPreviousDMSEntryHasCompleted_(targetEmail) {
       }
     }
   } else {
-    Logger.error('Encountered an error in the responseBody of API Get DMS Progresses.');
+    Logger.log('Encountered an error in the responseBody of API Get DMS Progresses.');
   }
 }
 
@@ -87,7 +88,8 @@ function getDMSProgresses_() {
       "cookie": PropertiesService.getScriptProperties().getProperty('cookieDMS'),
     },
     payload: PropertiesService.getScriptProperties().getProperty('bodyGetDMSProgresses'),
-    method: "POST"
+    method: "POST",
+    muteHttpExceptions: true
   };
 
   const response = UrlFetchApp.fetch(url, options);
@@ -97,8 +99,8 @@ function getDMSProgresses_() {
   if (statusCode === 200) {
     Logger.info(`Successfully retrieved DMS progresses.`);
   } else {
-    const errorMessage = `Failed to retrieve DMS progresses. Status code: ${statusCode}, Response: ${response.getContentText()}`;
-    Logger.error(errorMessage);
+    const errorMessage = `Failed to retrieve DMS progresses. Status code: ${statusCode}, Response: ${responseBody}`;
+    Logger.log(errorMessage);
   }
 
   return responseBody;

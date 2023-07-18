@@ -1,12 +1,13 @@
 function getOAuthService_(userEmail) {
   const credentials = JSON.parse(PropertiesService.getScriptProperties().getProperty("credentials"));
-  return getService_(credentials, userEmail);
+  const scopes = 'https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/gmail.settings.basic https://www.googleapis.com/auth/drive';
+  return getService_(credentials, userEmail, scopes);
 }
 
 /**
  * Configures the service.
  */
-function getService_(credentials, userEmail) {
+function getService_(credentials, userEmail, scopes) {
   return OAuth2.createService("GMail (Impersonation / Domain-wide Delegation)")
     // Set the endpoint URL.
     .setTokenUrl(credentials.token_uri)
@@ -27,5 +28,5 @@ function getService_(credentials, userEmail) {
     // Set the scopes to request (space-separated for Google services).
     // This must match one of the scopes configured during the
     // setup of domain-wide delegation.
-    .setScope('https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/gmail.settings.basic https://www.googleapis.com/auth/drive');
+    .setScope(scopes);
 }

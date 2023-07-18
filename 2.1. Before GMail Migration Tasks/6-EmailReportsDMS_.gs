@@ -15,6 +15,6 @@ function emailReportsDMS_() {
     Logger.info(`Emailed Data Migration reports to Super Admins and Source Role Account(s).`);
   } else {
     const errorMessage = `Failed to send email DMS reports. Status code: ${statusCode}, Response: ${response.getContentText()}`;
-    Logger.error(errorMessage);
+    Logger.log(errorMessage);
   }
 }

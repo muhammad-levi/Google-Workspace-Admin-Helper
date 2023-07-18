@@ -21,23 +21,19 @@ function processScheduledSuspensions() {
       const rowToUpdate = rowIndex + 1; // Adjust the row index to account for header row
 
       if (!user.suspended) {
-        // Reset password
-        const newPassword = generateNewPassword_();
-
-        const newPasswordCell = sheet.getRange(rowToUpdate, newPasswordColumnIndex);
-        newPasswordCell.setValue(newPassword);
-
-        user.password = newPassword;
-        user.changePasswordAtNextLogin = false;
         user.suspended = true;
-
-        AdminDirectory.Users.update(user, email);
-
         Logger.info('User ' + email + ' has been suspended.');
       } else {
         Logger.info('User ' + email + ' was already suspended.');
       }
+      // Reset password
+      const newPassword = generateNewPassword_();
+      const newPasswordCell = sheet.getRange(rowToUpdate, newPasswordColumnIndex);
+      newPasswordCell.setValue(newPassword);
+      user.password = newPassword;
+      user.changePasswordAtNextLogin = false;
 
+      AdminDirectory.Users.update(user, email);
       const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
       statusCell.setValue(USER_STATUS.SUSPENDED);
     }
