@@ -26,25 +26,25 @@ function scheduleMigratingGMailOfSuspendedAccount() {
       resuspend_(lastUserEmail);
     }
 
-    const firstEntryWithStatusIsSuspended = dataValues.find((row) => {
-      const status = row[2];
-      return status === USER_STATUS.SUSPENDED;
-    });
+    const firstTargetEntry = dataValues.find(row => findEntryByStatusAndMarkForDeletionIsTrue_(row, USER_STATUS.SUSPENDED));
 
-    if (firstEntryWithStatusIsSuspended) {
-      const indexOfFirstEntryWithStatusIsSuspended = dataValues.findIndex((row) => {
-        const status = row[2];
-        return status === USER_STATUS.SUSPENDED;
-      });
+    if (firstTargetEntry) {
+      const indexOfFirstTargetEntry = dataValues.findIndex((row) => findEntryByStatusAndMarkForDeletionIsTrue_(row, USER_STATUS.SUSPENDED));
 
-      const rowToUpdate = indexOfFirstEntryWithStatusIsSuspended + 1; // Adjust the row index to account for header row
+      const rowToUpdate = indexOfFirstTargetEntry + 1; // Adjust the row index to account for header row
       const statusCell = sheet.getRange(rowToUpdate, statusColumnIndex);
       statusCell.setValue(USER_STATUS.MIGRATING_GMAIL);
 
-      const userEmail = firstEntryWithStatusIsSuspended[0];
+      const userEmail = firstTargetEntry[0];
       doSomeThingsBeforeGMailMigration(userEmail, targetEmail);
     }
   }
+}
+
+function findEntryByStatusAndMarkForDeletionIsTrue_(row, targetStatus) {
+  const status = row[2];
+  const isMarkedForDeletion = row[5];
+  return status === targetStatus && isMarkedForDeletion;
 }
 
 function checkWhetherPreviousDMSEntryHasCompleted_(targetEmail) {
